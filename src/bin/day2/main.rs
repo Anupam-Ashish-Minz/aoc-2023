@@ -9,7 +9,7 @@ struct Balls {
     green: usize,
 }
 
-fn parse_balls(s: &str) -> Balls {
+fn parse_balls_max(s: &str) -> Balls {
     let (gs, colors) = s.split_once(":").unwrap();
     let (_, gid) = gs.split_once(" ").unwrap();
     let game_id = gid.parse::<usize>().unwrap();
@@ -41,16 +41,21 @@ fn main() {
     let f = File::open("src/bin/day2/input.txt").expect("file not found");
     let reader = BufReader::new(f);
     let mut ids = 0;
+    let mut power = 0;
     for line in reader.lines() {
         let line = line.unwrap();
-        let b = parse_balls(&line);
+        let b = parse_balls_max(&line);
         // println!("{} {} {} {}", b.game_id, b.red, b.green, b.blue);
         if quality_games(&b, 12, 13, 14) {
             ids += b.game_id;
         }
+
+        let b2 = parse_balls_max(&line);
+        power += b2.red * b2.green * b2.blue;
     }
 
     println!("part one ans = {}", ids);
+    println!("part two ans = {}", power);
 }
 
 #[cfg(test)]
@@ -65,7 +70,7 @@ mod test {
         let game4 = "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red";
         let game5 = "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
         assert_eq!(
-            parse_balls(game1),
+            parse_balls_max(game1),
             Balls {
                 game_id: 1,
                 blue: 6,
@@ -74,7 +79,7 @@ mod test {
             }
         );
         assert_eq!(
-            parse_balls(game2),
+            parse_balls_max(game2),
             Balls {
                 game_id: 2,
                 blue: 4,
@@ -83,7 +88,7 @@ mod test {
             }
         );
         assert_eq!(
-            parse_balls(game3),
+            parse_balls_max(game3),
             Balls {
                 game_id: 3,
                 blue: 6,
@@ -92,7 +97,7 @@ mod test {
             }
         );
         assert_eq!(
-            parse_balls(game4),
+            parse_balls_max(game4),
             Balls {
                 game_id: 4,
                 blue: 15,
@@ -101,7 +106,7 @@ mod test {
             }
         );
         assert_eq!(
-            parse_balls(game5),
+            parse_balls_max(game5),
             Balls {
                 game_id: 5,
                 blue: 2,
@@ -118,11 +123,11 @@ mod test {
         let game3 = "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red";
         let game4 = "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red";
         let game5 = "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
-        assert!(quality_games(&parse_balls(game1), 12, 13, 14));
-        assert!(quality_games(&parse_balls(game2), 12, 13, 14));
-        assert!(!quality_games(&parse_balls(game3), 12, 13, 14));
-        assert!(!quality_games(&parse_balls(game4), 12, 13, 14));
-        assert!(quality_games(&parse_balls(game5), 12, 13, 14));
+        assert!(quality_games(&parse_balls_max(game1), 12, 13, 14));
+        assert!(quality_games(&parse_balls_max(game2), 12, 13, 14));
+        assert!(!quality_games(&parse_balls_max(game3), 12, 13, 14));
+        assert!(!quality_games(&parse_balls_max(game4), 12, 13, 14));
+        assert!(quality_games(&parse_balls_max(game5), 12, 13, 14));
     }
 
     #[test]
@@ -136,12 +141,31 @@ mod test {
             "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
         ];
         for line in inputs {
-            let b = parse_balls(&line);
+            let b = parse_balls_max(&line);
             if quality_games(&b, 12, 13, 14) {
                 ids += b.game_id;
             }
         }
 
         assert_eq!(ids, 8);
+    }
+
+    #[test]
+    fn test_part_two() {
+        let inputs = [
+            "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
+            "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
+            "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
+            "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
+            "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
+        ];
+        let mut power = 0;
+        for line in inputs {
+            let b2 = parse_balls_max(&line);
+            println!("{} {} {}", b2.red, b2.blue, b2.green);
+            power += b2.red * b2.green * b2.blue;
+        }
+
+        assert_eq!(power, 2286);
     }
 }
