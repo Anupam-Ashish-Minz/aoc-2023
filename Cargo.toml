@@ -9,4 +9,8 @@ edition = "2021"
 name = "day1"
 test = true
 
+[[bin]]
+name = "day2"
+test = true
+
 [dependencies]
