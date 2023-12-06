@@ -13,4 +13,12 @@ test = true
 name = "day2"
 test = true
 
+[[bin]]
+name = "day3"
+test = true
+
+[[bin]]
+name = "day4"
+test = true
+
 [dependencies]
